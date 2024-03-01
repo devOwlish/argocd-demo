@@ -4,4 +4,4 @@ metadata:
   name: cert-manager
 spec:
   source:
-    targetRevision: test
+    targetRevision: feat/init

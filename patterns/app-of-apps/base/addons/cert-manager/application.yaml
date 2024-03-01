@@ -19,7 +19,7 @@ spec:
   source:
     repoURL: https://github.com/devOwlish/argocd-demo.git
     path: manifests/cert-manager
-    targetRevision: init
+    targetRevision: main
   syncPolicy:
     automated:
       allowEmpty: true
