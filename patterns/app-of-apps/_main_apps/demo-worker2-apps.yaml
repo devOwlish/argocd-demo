@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: demo-worker2-apps
+  namespace: argocd
+  labels:
+    tier: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: argocd
+  project: default
+  source:
+    repoURL: https://github.com/devOwlish/argocd-demo.git
+    path: patterns/app-of-apps/clusters/worker2
+    targetRevision: main
+  syncPolicy:
+    automated:
+      allowEmpty: true
+      selfHeal: true
+      prune: true
+    syncOptions:
+    - Validate=true
+    - CreateNamespace=true
+    - PruneLast=true

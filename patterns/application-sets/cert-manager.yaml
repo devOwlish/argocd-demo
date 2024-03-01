@@ -1,0 +1,36 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cert-manager
+spec:
+  generators:
+    # Get all clusters registered in ArgoCD
+    - clusters: {}
+  # Returns
+  # - name: demo-argocd
+  # - name: demo-worker1
+  # - name: demo-worker2
+  template:
+    metadata:
+      name: '{{ name }}-cert-manager'
+      labels:
+        tier: infra
+    spec:
+      destination:
+        name: '{{ name }}'
+        namespace: cert-manager
+      project: 'default'
+      source:
+        repoURL: https://github.com/devOwlish/argocd-demo.git
+        path: manifests/cert-manager
+        targetRevision: main
+      syncPolicy:
+        automated:
+          allowEmpty: true
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - Validate=true
+          - CreateNamespace=true
+          - PruneLast=true

@@ -1,0 +1,59 @@
+---
+# Annotations used:
+#   nginx.demo.owlish.cloud/version: "4.10.0" | ingress-nginx chart version.
+# http://masterminds.github.io/sprig/
+
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: ingress-nginx
+spec:
+  goTemplate: true
+  generators:
+    # Get all clusters registered in ArgoCD
+    # Use the nginx.demo.owlish.cloud/version annotation (if exists) to set the chart version
+    - clusters:
+        values:
+          chartVersion: '{{ default "4.10.0" ( index ( default dict .metadata.annotations ) "nginx.demo.owlish.cloud/version"  ) }}'
+  # Returns
+  # - name: demo-argocd
+  #   values:
+  #     chartVersion: 4.9.1 ( via the annotation )
+  # - name: demo-worker1
+  #   values:
+  #     chartVersion: 4.10.0 ( a default value )
+  # - name: demo-worker2
+  #   values:
+  #     chartVersion: 4.10.0 ( a default value )
+  template:
+    metadata:
+      name: '{{ .name }}-ingress-nginx'
+      labels:
+        tier: infra
+    spec:
+      destination:
+        name: '{{ .name }}'
+        namespace: ingress-nginx
+      project: 'default'
+      source:
+        repoURL: https://kubernetes.github.io/ingress-nginx
+        chart: ingress-nginx
+        targetRevision: '{{ .values.chartVersion }}'
+        helm:
+          values: |
+            fullnameOverride: ingress-nginx
+            controller:
+              service:
+                annotations:
+                  service.beta.kubernetes.io/azure-pip-name: ingress-pip
+                  service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: /healthz
+              externalTrafficPolicy: Local
+      syncPolicy:
+        automated:
+          allowEmpty: true
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - Validate=true
+          - CreateNamespace=true
+          - PruneLast=true

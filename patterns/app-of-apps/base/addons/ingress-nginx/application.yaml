@@ -1,0 +1,39 @@
+# Placeholders that MUST be overridden by an overlay:
+# - CLUSTER: the name of the target cluster to which the application should be deployed
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingress-nginx
+  namespace: argocd
+  labels:
+    tier: cluster-addons
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: CLUSTER
+    namespace: ingress-nginx
+  project: PROJECT
+  source:
+    repoURL: https://kubernetes.github.io/ingress-nginx
+    chart: ingress-nginx
+    targetRevision: 4.10.0
+    helm:
+      values: |
+        fullnameOverride: ingress-nginx
+        controller:
+          service:
+            annotations:
+              service.beta.kubernetes.io/azure-pip-name: ingress-pip
+              service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: /healthz
+          externalTrafficPolicy: Local
+  syncPolicy:
+    automated:
+      allowEmpty: true
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - Validate=true
+      - CreateNamespace=true
+      - PruneLast=true

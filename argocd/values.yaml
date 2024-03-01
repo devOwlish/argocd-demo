@@ -1,0 +1,107 @@
+_: &config
+  execProviderConfig:
+    apiVersion: client.authentication.k8s.io/v1beta1
+    command: argocd-k8s-auth
+    env:
+      AAD_ENVIRONMENT_NAME: AzurePublicCloud
+      AAD_LOGIN_METHOD: msi
+      AZURE_TENANT_ID: <AZURE_TENANT_ID>
+      # ArgoCD Cluster Kubelet Identity
+      # Take from the `argocd_identity` Terraform output
+      AZURE_CLIENT_ID: <AZURE_CLIENT_ID>
+    args:
+      - azure
+  tlsClientConfig:
+    insecure: true
+
+global:
+  domain: argocd.owlish.cloud
+
+configs:
+  cm:
+    create: true
+    admin.enabled: true
+
+    timeout.reconciliation: 20s
+    timeout.hard.reconciliation: 0s
+
+    kustomize.buildOptions: --enable-helm
+
+    resource.customizations.ignoreDifferences.admissionregistration.k8s.io_ValidatingWebhookConfiguration: |
+      jqPathExpressions:
+      - .webhooks[].namespaceSelector.matchExpressions[] | select(.key == "control-plane")
+      - .webhooks[].namespaceSelector.matchExpressions[] | select(.key == "kubernetes.azure.com/managedby")
+
+  params:
+    create: true
+    server.insecure: "true"
+
+  repositories:
+    argocd-demo-repo:
+      url: https://github.com/devOwlish/argocd-demo
+
+
+  clusterCredentials:
+    - name: demo-worker1
+      labels:
+        reflector.demo.owlish.cloud/enabled: "true"
+      annotations:
+        nginx.demo.owlish.cloud/version: "4.9.1"
+      # Cluster endpoint
+      # Take from the `worker1_host` Terraform output
+      server: https://demo-worker1-kkapl87c.hcp.eastus2.azmk8s.io:443
+      config: *config
+    - name: demo-worker2
+      labels:
+        reflector.demo.owlish.cloud/enabled: "true"
+      annotations:
+        reflector.demo.owlish.cloud/version: "6.1.47"
+      # Cluster endpoint
+      # Take from the `worker1_host` Terraform output
+      server: https://demo-worker2-ym9zdh79.hcp.eastus2.azmk8s.io:443
+      config: *config
+
+  secret:
+    # admin
+    argocdServerAdminPassword: "$2a$10$p7bNbfp4fkash35ZZmoM5.mYrpcQljU.Keu/vkXhtMCjzDzpETkcm"
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: "nginx"
+
+# App used to sync ArgoCD with ArgoCD
+extraObjects:
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: argocd
+      namespace: argocd
+      labels:
+        tier: cluster-addons
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      destination:
+        name: in-cluster
+        namespace: argocd
+      project: default
+      sources:
+        - chart: argo-cd
+          repoURL: https://argoproj.github.io/argo-helm
+          targetRevision: 6.5.0
+          helm:
+            valueFiles:
+              - $values/argocd/values.yaml
+        - repoURL: https://github.com/devOwlish/argocd-demo
+          targetRevision: main
+          ref: values
+      syncPolicy:
+        automated:
+          allowEmpty: true
+          selfHeal: true
+          prune: true
+        syncOptions:
+        - Validate=true
+        - CreateNamespace=true
+        - PruneLast=true

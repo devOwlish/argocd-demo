@@ -1,0 +1,33 @@
+# Placeholders that MUST be overridden by an overlay:
+# - CLUSTER: the name of the target cluster to which the application should be deployed
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: reflector
+  namespace: argocd
+  labels:
+    tier: cluster-addons
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: CLUSTER
+    namespace: reflector
+  project: default
+  source:
+    repoURL: https://emberstack.github.io/helm-charts
+    chart: reflector
+    targetRevision: 7.1.256
+    helm:
+      valuesObject:
+        fullnameOverride: reflector
+  syncPolicy:
+    automated:
+      allowEmpty: true
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - Validate=true
+      - CreateNamespace=true
+      - PruneLast=true

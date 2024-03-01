@@ -1,0 +1,10 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+spec:
+  source:
+    helm:
+      valuesObject:
+        fullnameOverride: demo-super-reflector
+
