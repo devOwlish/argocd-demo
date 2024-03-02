@@ -24,15 +24,23 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   location            = azurerm_resource_group.cluster.location
   resource_group_name = azurerm_resource_group.cluster.name
 
+
+
   default_node_pool {
-    name           = "default"
-    node_count     = 1
-    vm_size        = "Standard_B2ms"
+    name       = "default"
+    node_count = 1
+    # vm_size        = "Standard_B2ms"
+    vm_size        = "Standard_DS2_v2"
     vnet_subnet_id = azurerm_subnet.cluster.id
   }
 
   identity {
     type = "SystemAssigned"
+  }
+
+  azure_active_directory_role_based_access_control {
+    azure_rbac_enabled = true
+    managed            = true
   }
 }
 

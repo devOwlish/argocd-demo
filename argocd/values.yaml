@@ -24,38 +24,24 @@ configs:
     argocd-demo-repo:
       url: https://github.com/devOwlish/argocd-demo
 
-  clusterCredentials: []
-    # - name: mycluster
-    #   server: https://mycluster.example.com
-    #   labels: {}
-    #   annotations: {}
-    #   config:
-    #     bearerToken: "<authentication token>"
-    #     tlsClientConfig:
-    #       insecure: false
-    #       caData: "<base64 encoded certificate>"
-    # - name: mycluster2
-    #   server: https://mycluster2.example.com
-    #   labels: {}
-    #   annotations: {}
-    #   namespaces: namespace1,namespace2
-    #   clusterResources: true
-    #   config:
-    #     bearerToken: "<authentication token>"
-    #     tlsClientConfig:
-    #       insecure: false
-    #       caData: "<base64 encoded certificate>"
-    # - name: mycluster3-project-scoped
-    #   server: https://mycluster3.example.com
-    #   labels: {}
-    #   annotations: {}
-    #   project: my-project1
-    #   config:
-    #     bearerToken: "<authentication token>"
-    #     tlsClientConfig:
-    #       insecure: false
-    #       caData: "<base64 encoded certificate>"
-
+  clusterCredentials:
+    - name: demo-worker1
+      server: https://demo-worker1-8gaewmoo.hcp.eastus2.azmk8s.io
+      # labels: {}
+      # annotations: {}
+      config:
+        execProviderConfig:
+            command: argocd-k8s-auth
+            env:
+                AAD_ENVIRONMENT_NAME: AzurePublicCloud
+                AAD_LOGIN_METHOD: msi
+                AZURE_TENANT_ID: 65874f9d-f5bd-4d1a-9e00-1b4c494c8ac4
+                AZURE_CLIENT_ID: 59be59ff-c0dd-4119-9212-1d9ac70ded0d
+            args:
+              - azure
+            apiVersion: client.authentication.k8s.io/v1beta1
+        tlsClientConfig:
+          insecure: true
 
   secret:
     # admin
@@ -67,7 +53,6 @@ server:
     ingressClassName: "nginx"
 
 # App used to sync ArgoCD with ArgoCD
-# We need to go deeper.jpg
 extraObjects:
   - apiVersion: argoproj.io/v1alpha1
     kind: Application
