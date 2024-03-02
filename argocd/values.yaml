@@ -26,23 +26,36 @@ configs:
 
   clusterCredentials:
     - name: demo-worker1
-      server: https://demo-worker1-8gaewmoo.hcp.eastus2.azmk8s.io
-      # labels: {}
-      # annotations: {}
+      server: https://demo-worker1-jkwebutk.hcp.eastus2.azmk8s.io:443
       config:
         execProviderConfig:
-            command: argocd-k8s-auth
-            env:
-                AAD_ENVIRONMENT_NAME: AzurePublicCloud
-                AAD_LOGIN_METHOD: msi
-                AZURE_TENANT_ID: 65874f9d-f5bd-4d1a-9e00-1b4c494c8ac4
-                AZURE_CLIENT_ID: 59be59ff-c0dd-4119-9212-1d9ac70ded0d
-            args:
-              - azure
-            apiVersion: client.authentication.k8s.io/v1beta1
+          apiVersion: client.authentication.k8s.io/v1beta1
+          command: argocd-k8s-auth
+          env:
+            AAD_ENVIRONMENT_NAME: AzurePublicCloud
+            AAD_LOGIN_METHOD: msi
+            AZURE_TENANT_ID: 65874f9d-f5bd-4d1a-9e00-1b4c494c8ac4
+            AZURE_CLIENT_ID: 59be59ff-c0dd-4119-9212-1d9ac70ded0d
+          args:
+            - azure
         tlsClientConfig:
           insecure: true
+    - name: demo-worker2
+      server: https://demo-worker2-2r8wbpc1.hcp.eastus2.azmk8s.io
+      config:
+        execProviderConfig:
+          apiVersion: client.authentication.k8s.io/v1beta1
+          command: argocd-k8s-auth
+          env:
+            AAD_ENVIRONMENT_NAME: AzurePublicCloud
+            AAD_LOGIN_METHOD: msi
+            AZURE_TENANT_ID: 65874f9d-f5bd-4d1a-9e00-1b4c494c8ac4
+            AZURE_CLIENT_ID: 59be59ff-c0dd-4119-9212-1d9ac70ded0d
+          args:
+            - azure
 
+        tlsClientConfig:
+          insecure: true
   secret:
     # admin
     argocdServerAdminPassword: "$2a$10$p7bNbfp4fkash35ZZmoM5.mYrpcQljU.Keu/vkXhtMCjzDzpETkcm"

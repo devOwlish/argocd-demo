@@ -1,4 +1,4 @@
 resources:
   - ../clusters/argocd
-  # - ../clusters/worker1
-  # - ../clusters/worker2
+  - ../clusters/worker1
+  - ../clusters/worker2

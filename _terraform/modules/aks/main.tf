@@ -23,13 +23,12 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   dns_prefix          = var.name
   location            = azurerm_resource_group.cluster.location
   resource_group_name = azurerm_resource_group.cluster.name
-
+  node_resource_group = "${azurerm_resource_group.cluster.name}-nodepool"
 
 
   default_node_pool {
-    name       = "default"
-    node_count = 1
-    # vm_size        = "Standard_B2ms"
+    name           = "default"
+    node_count     = 1
     vm_size        = "Standard_DS2_v2"
     vnet_subnet_id = azurerm_subnet.cluster.id
   }
@@ -44,16 +43,10 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   }
 }
 
-data "azurerm_resource_group" "nodepool" {
-  name = "MC_${var.name}_${var.name}_eastus2"
-
-  depends_on = [azurerm_kubernetes_cluster.cluster]
-}
-
 resource "azurerm_public_ip" "ingress" {
   name                = var.name
-  location            = data.azurerm_resource_group.nodepool.location
-  resource_group_name = data.azurerm_resource_group.nodepool.name
+  location            = azurerm_kubernetes_cluster.cluster.location
+  resource_group_name = "${azurerm_resource_group.cluster.name}-nodepool"
   sku                 = "Standard"
   allocation_method   = "Static"
 }
