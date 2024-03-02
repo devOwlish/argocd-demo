@@ -1,8 +1,0 @@
-fullnameOverride: ingress-nginx
-
-controller:
-  service:
-    annotations:
-      service.beta.kubernetes.io/azure-pip-name: demo-argocd
-      service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: /healthz
-  externalTrafficPolicy: Local

@@ -1,5 +1,4 @@
 # Placeholders that MUST be overridden by an overlay:
-# - PROJECT: the name of the ArgoCD project to which the application belongs
 # - CLUSTER: the name of the target cluster to which the application should be deployed
 
 apiVersion: argoproj.io/v1alpha1
@@ -22,6 +21,7 @@ spec:
     targetRevision: 4.10.0
     helm:
       values: |
+        fullnameOverride: ingress-nginx
         controller:
           service:
             annotations:
@@ -32,6 +32,7 @@ spec:
     automated:
       allowEmpty: true
       selfHeal: true
+      prune: true
     syncOptions:
     - Validate=true
     - CreateNamespace=true

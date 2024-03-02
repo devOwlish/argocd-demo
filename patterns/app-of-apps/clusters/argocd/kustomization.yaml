@@ -5,7 +5,7 @@ namePrefix: demo-argocd-
 resources:
   - ../../base/addons/cert-manager
   - ../../base/addons/ingress-nginx
-  - ../../base/addons/external-dns
+  - ../../base/addons/reflector
 
 patches:
   - path: destination.yaml
@@ -15,3 +15,7 @@ patches:
     target:
       kind: Application
       name: cert-manager
+  - path: reflector.yaml
+    target:
+      kind: Application
+      name: reflector

@@ -7,4 +7,3 @@ spec:
   project: default
   destination:
     name: in-cluster
-
