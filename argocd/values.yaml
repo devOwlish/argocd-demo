@@ -1,0 +1,64 @@
+fullnameOverride: argocd
+
+global:
+  domain: argocd.owlish.cloud
+
+configs:
+  cm:
+    create: true
+    admin.enabled: true
+
+    timeout.reconciliation: 20s
+    timeout.hard.reconciliation: 0s
+
+    kustomize.buildOptions: --enable-helm
+
+  params:
+    create: true
+    server.insecure: "true"
+
+  repositories:
+    argocd-demo-repo:
+      url: https://github.com/devOwlish/argocd-demo
+
+  clusterCredentials: []
+    # - name: mycluster
+    #   server: https://mycluster.example.com
+    #   labels: {}
+    #   annotations: {}
+    #   config:
+    #     bearerToken: "<authentication token>"
+    #     tlsClientConfig:
+    #       insecure: false
+    #       caData: "<base64 encoded certificate>"
+    # - name: mycluster2
+    #   server: https://mycluster2.example.com
+    #   labels: {}
+    #   annotations: {}
+    #   namespaces: namespace1,namespace2
+    #   clusterResources: true
+    #   config:
+    #     bearerToken: "<authentication token>"
+    #     tlsClientConfig:
+    #       insecure: false
+    #       caData: "<base64 encoded certificate>"
+    # - name: mycluster3-project-scoped
+    #   server: https://mycluster3.example.com
+    #   labels: {}
+    #   annotations: {}
+    #   project: my-project1
+    #   config:
+    #     bearerToken: "<authentication token>"
+    #     tlsClientConfig:
+    #       insecure: false
+    #       caData: "<base64 encoded certificate>"
+
+
+  secret:
+    # admin
+    argocdServerAdminPassword: "$2a$10$p7bNbfp4fkash35ZZmoM5.mYrpcQljU.Keu/vkXhtMCjzDzpETkcm"
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: "nginx"
