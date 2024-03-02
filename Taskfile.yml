@@ -1,0 +1,29 @@
+# https://taskfile.dev
+version: '3'
+
+tasks:
+  bootstrap:
+    desc: "Bootstrap the demo environment"
+    cmds:
+      - task: cluster-creds
+      - kubectl config use-context demo-argocd
+      - task: argocd
+
+  cluster-creds:
+    desc: "Get cluster credentials"
+    cmds:
+      - az aks get-credentials --resource-group demo-worker1 --name demo-worker1 --overwrite-existing
+      - az aks get-credentials --resource-group demo-worker2 --name demo-worker2 --overwrite-existing
+      - az aks get-credentials --resource-group demo-argocd --name demo-argocd --overwrite-existing
+
+  argocd:
+    desc: "Install ArgoCD"
+    cmds:
+      - kubectl create namespace argocd
+      - kubectl config set-context --current --namespace=argocd
+      - helm template argocd argo/argo-cd  --values argocd/values.yaml | kubectl apply -f -
+
+  app-of-apps:
+    desc: "Deploy the app-of-apps pattern"
+    cmds:
+      - kubectl kustomize patterns/app-of-apps/_deploy | kubectl apply -f -
