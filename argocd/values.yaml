@@ -35,12 +35,13 @@ configs:
             AAD_ENVIRONMENT_NAME: AzurePublicCloud
             AAD_LOGIN_METHOD: msi
             AZURE_TENANT_ID: 65874f9d-f5bd-4d1a-9e00-1b4c494c8ac4
-            AZURE_CLIENT_ID: 59be59ff-c0dd-4119-9212-1d9ac70ded0d
+            AZURE_CLIENT_ID: 0aaa756b-9092-437f-99df-2634e000b81e
           args:
             - azure
         tlsClientConfig:
           insecure: true
     - name: demo-worker2
+    # Change
       server: https://demo-worker2-2r8wbpc1.hcp.eastus2.azmk8s.io
       config:
         execProviderConfig:
@@ -50,7 +51,8 @@ configs:
             AAD_ENVIRONMENT_NAME: AzurePublicCloud
             AAD_LOGIN_METHOD: msi
             AZURE_TENANT_ID: 65874f9d-f5bd-4d1a-9e00-1b4c494c8ac4
-            AZURE_CLIENT_ID: 59be59ff-c0dd-4119-9212-1d9ac70ded0d
+            # Change
+            AZURE_CLIENT_ID: 0aaa756b-9092-437f-99df-2634e000b81e
           args:
             - azure
 

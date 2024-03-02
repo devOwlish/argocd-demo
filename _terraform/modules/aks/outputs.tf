@@ -7,7 +7,7 @@ output "host" {
 }
 
 output "identity" {
-  value = azurerm_kubernetes_cluster.cluster.identity.0.principal_id
+  value = azurerm_kubernetes_cluster.cluster.kubelet_identity.0.object_id
 }
 
 output "id" {
