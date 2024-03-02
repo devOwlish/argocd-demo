@@ -67,3 +67,40 @@ server:
   ingress:
     enabled: true
     ingressClassName: "nginx"
+
+# App used to sync ArgoCD with ArgoCD
+# We need to go deeper.jpg
+extraObjects:
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: argocd
+      namespace: argocd
+      labels:
+        tier: cluster-addons
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      destination:
+        name: in-cluster
+        namespace: argocd
+      project: default
+      sources:
+        - chart: argo-cd
+          repoURL: https://argoproj.github.io/argo-helm
+          targetRevision: 6.5.0
+          helm:
+            valueFiles:
+              - $values/argocd/values.yaml
+        - repoURL: https://github.com/devOwlish/argocd-demo
+          targetRevision: feat/init
+          ref: values
+      syncPolicy:
+        automated:
+          allowEmpty: true
+          selfHeal: true
+          prune: true
+        syncOptions:
+        - Validate=true
+        - CreateNamespace=true
+        - PruneLast=true
