@@ -1,10 +1,7 @@
-# Placeholders that MUST be overridden by an overlay:
-# - CLUSTER: the name of the target cluster to which the application should be deployed
-
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: app-of-apps
+  name: demo-worker1-apps
   namespace: argocd
   labels:
     tier: argocd
@@ -14,14 +11,11 @@ spec:
   destination:
     name: in-cluster
     namespace: argocd
-  project: PROJECT
+  project: default
   source:
     repoURL: https://github.com/devOwlish/argocd-demo.git
-    path: patterns/app-of-apps/clusters
-    targetRevision: main
-    directory:
-      recurse: true
-      include: 'kustomization.yaml'
+    path: patterns/app-of-apps/clusters/worker1
+    targetRevision: feat/init
   syncPolicy:
     automated:
       allowEmpty: true
