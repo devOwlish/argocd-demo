@@ -1,13 +1,11 @@
-
-output "argocd" {
-  value     = module.aks["demo-argocd"].host
-  sensitive = true
+output "argocd_identity" {
+  value = module.aks["demo-argocd"].identity
 }
-output "worker1" {
+output "worker1_host" {
   value     = module.aks["demo-worker1"].host
   sensitive = true
 }
-output "worker2" {
+output "worker2_host" {
   value     = module.aks["demo-worker2"].host
   sensitive = true
 }

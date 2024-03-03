@@ -25,7 +25,7 @@ spec:
         controller:
           service:
             annotations:
-              service.beta.kubernetes.io/azure-pip-name: demo-argocd
+              service.beta.kubernetes.io/azure-pip-name: ingress-pip
               service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: /healthz
           externalTrafficPolicy: Local
   syncPolicy:
