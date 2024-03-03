@@ -15,3 +15,8 @@ patches:
   - path: destination.yaml
     target:
       kind: Application
+  # App-specific patches
+  - path: cert-manager.yaml
+    target:
+      kind: Application
+      name: cert-manager
