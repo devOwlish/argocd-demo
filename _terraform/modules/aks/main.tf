@@ -44,7 +44,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
 }
 
 resource "azurerm_public_ip" "ingress" {
-  name                = var.name
+  name                = "ingress-pip"
   location            = azurerm_kubernetes_cluster.cluster.location
   resource_group_name = "${azurerm_resource_group.cluster.name}-nodepool"
   sku                 = "Standard"
