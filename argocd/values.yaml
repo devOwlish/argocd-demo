@@ -7,7 +7,7 @@ _: &config
       AAD_LOGIN_METHOD: msi
       AZURE_TENANT_ID: 65874f9d-f5bd-4d1a-9e00-1b4c494c8ac4
       # Change ( Application ID )
-      AZURE_CLIENT_ID: df3f16c5-4469-4bdd-8c72-0e0c90cadaea
+      AZURE_CLIENT_ID: 01dc7644-370c-4e5a-8ff5-352b48d9c0e5
     args:
       - azure
   tlsClientConfig:
@@ -42,10 +42,10 @@ configs:
 
   clusterCredentials:
     - name: demo-worker1
-      server: https://demo-worker1-2q21o500.hcp.eastus2.azmk8s.io
+      server: https://demo-worker1-a1oc1wcc.hcp.eastus2.azmk8s.io:443
       config: *config
     - name: demo-worker2
-      server: https://demo-worker2-u8760z35.hcp.eastus2.azmk8s.io
+      server: https://demo-worker2-3tzgv7r1.hcp.eastus2.azmk8s.io:443
       config: *config
 
   secret:

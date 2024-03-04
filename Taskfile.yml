@@ -21,8 +21,8 @@ tasks:
     cmds:
       - kubectl create namespace argocd
       - kubectl config set-context --current --namespace=argocd
-      - helm template argocd argo/argo-cd  --values argocd/values.yaml | kubectl apply -f -
-      - helm template argocd argo/argo-cd  --values argocd/values.yaml | kubectl apply -f -
+      - helm template argocd argo/argo-cd  --values argocd/values.yaml | kubectl apply -f - || helm template argocd argo/argo-cd  --values argocd/values.yaml | kubectl apply -f -
+
 
   app-of-apps:
     desc: "Deploy the app-of-apps pattern"
