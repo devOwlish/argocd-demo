@@ -42,6 +42,8 @@ configs:
 
   clusterCredentials:
     - name: demo-worker1
+      annotations:
+        nginx.demo.owlish.cloud/version: "4.9.1"
       server: https://demo-worker1-a1oc1wcc.hcp.eastus2.azmk8s.io:443
       config: *config
     - name: demo-worker2
