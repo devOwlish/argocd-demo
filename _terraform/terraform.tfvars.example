@@ -1,0 +1,5 @@
+tenant_id = ""
+subscription_id = ""
+cloudflare_api_token = ""
+cloudflare_account_id = ""
+cloudflare_zone_name = ""

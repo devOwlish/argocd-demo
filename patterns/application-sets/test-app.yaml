@@ -1,0 +1,59 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: testApp
+spec:
+  goTemplate: true
+  generators:
+    - cluster:
+      matchLabels:
+        reflector.demo.owlish.cloud/enabled: "true"
+      values:
+        chartVersion: '{{ default "7.1.256" ( index ( default dict .metadata.annotations ) "reflector.demo.owlish.cloud/version"  ) }}'
+  # Returns
+  # - name: demo-worker1
+  #   values:
+  #     chartVersion: 7.1.256 ( a default value )
+  # - name: demo-worker2
+  #   values:
+  #     chartVersion: 6.1.47 ( via the annotation )
+  template:
+    metadata:
+      name: '{{ .name }}-reflector'
+      labels:
+        tier: infra
+    spec:
+      destination:
+        name: '{{ .name }}'
+        namespace: reflector
+      project: 'default'
+      source:
+        repoURL: https://emberstack.github.io/helm-charts
+        chart: reflector
+        targetRevision: '{{ .values.chartVersion }}'
+        helm:
+          valuesObject:
+            fullnameOverride: reflector
+      syncPolicy:
+        automated:
+          allowEmpty: true
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - Validate=true
+          - CreateNamespace=true
+          - PruneLast=true
+  templatePatch: |
+    spec:
+      source:
+        helm:
+          valueFiles:
+          {{- range $valueFile := .valueFiles }}
+            - {{ $valueFile }}
+          {{- end }}
+    {{- if .autoSync }}
+      syncPolicy:
+        automated:
+          prune: {{ .prune }}
+    {{- end }}

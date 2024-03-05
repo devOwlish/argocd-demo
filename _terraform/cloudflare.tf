@@ -1,5 +1,5 @@
 data "cloudflare_zone" "owlish" {
-  name = "owlish.cloud"
+  name = var.cloudflare_zone_name
 }
 
 resource "cloudflare_record" "argocd" {
