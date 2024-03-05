@@ -29,4 +29,9 @@ tasks:
     cmds:
       - kubectl apply -f patterns/app-of-apps/_main_apps
 
+  application-sets:
+    desc: "Deploy the app-of-apps pattern"
+    cmds:
+      - kubectl apply -f patterns/application-sets
+
 

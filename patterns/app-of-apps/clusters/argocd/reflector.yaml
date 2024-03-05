@@ -6,5 +6,5 @@ spec:
   source:
     helm:
       valuesObject:
-        fullnameOverride: demo-reflector
+        fullnameOverride: demo-super-reflector
 

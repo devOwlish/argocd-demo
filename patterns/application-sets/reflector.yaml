@@ -1,0 +1,56 @@
+---
+# Labels used:
+#   reflector.demo.owlish.cloud/enabled: "true" | whether Reflector is to be deployed.
+# Annotations used:
+#   reflector.demo.owlish.cloud/version: "4.10.0" | reflector chart version.
+# http://masterminds.github.io/sprig/
+
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: reflector
+spec:
+  goTemplate: true
+  generators:
+    # Get all clusters with the reflector.demo.owlish.cloud/enabled="true" label
+    # Use the reflector.demo.owlish.cloud/version annotation (if exists) to set the chart version
+    - clusters:
+        selector:
+          #  matchExpressions is also supported
+          matchLabels:
+            reflector.demo.owlish.cloud/enabled: "true"
+        values:
+          chartVersion: '{{ default "7.1.256" ( index ( default dict .metadata.annotations ) "reflector.demo.owlish.cloud/version"  ) }}'
+  # Returns
+  # - name: demo-worker1
+  #   values:
+  #     chartVersion: 7.1.256 ( a default value )
+  # - name: demo-worker2
+  #   values:
+  #     chartVersion: 6.1.47 ( via the annotation )
+  template:
+    metadata:
+      name: '{{ .name }}-reflector'
+      labels:
+        tier: infra
+    spec:
+      destination:
+        name: '{{ .name }}'
+        namespace: reflector
+      project: 'default'
+      source:
+        repoURL: https://emberstack.github.io/helm-charts
+        chart: reflector
+        targetRevision: '{{ .values.chartVersion }}'
+        helm:
+          valuesObject:
+            fullnameOverride: reflector
+      syncPolicy:
+        automated:
+          allowEmpty: true
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - Validate=true
+          - CreateNamespace=true
+          - PruneLast=true
