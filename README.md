@@ -21,6 +21,8 @@ Now the environment is ready to be provisioned. Run the following commands to cr
 $ terraform -chdir=_terraform plan
 $ terraform -chdir=_terraform apply
 ```
+Then, modify secondary clusters credentials in the [./argocd/values.yaml](./argocd/values.yaml) file (lines 8,10,49,56). All required parameters can be found via the `terraform output` command.
+
 When we have the infrastructure ready, we can bootstrap our ArgoCD cluster, run the following command:
 ```shell
 $ task bootstrap
